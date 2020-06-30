@@ -51,7 +51,6 @@ int main (void)
 
 playAgain:
     system ("clear");
-
     for (int i = 0; i < ROWS; i++)
         for (int j = 0; j < COLS; j++)
             board[i][j] = ' ';
@@ -81,8 +80,14 @@ playAgain:
 
     if (!tie)
         handleWin (nowPlaying);
-    if (getAns ())
+
+
+    printf ("Do You Want To Play Again? (y or n)");
+    if (getchar () != 'n')
+    {
+        clearBuffer ();
         goto playAgain;
+    }
 }
 
 
@@ -337,14 +342,4 @@ void handleWin (player winner)
 {
     printf ("Congratularions %s! You Win!\n", (winner == player1) ? "Player 1" : "Player 2");
     printf ("I Hope You Enjoyed The Game!\n");
-}
-
-
-bool getAns (void)
-{
-    printf ("Do You Want To Play Again? (y or n)");
-    char ans = getchar ();
-    clearBuffer ();
-
-    return (ans == 'n') ? 0 : 1;
 }

@@ -50,7 +50,7 @@ int main (void)
     clearBuffer ();
 
 playAgain:
-    system ("cls");
+    system ("clear");
 
     for (int i = 0; i < ROWS; i++)
         for (int j = 0; j < COLS; j++)
@@ -66,7 +66,7 @@ playAgain:
         printBoard ();
         printf ("Enter the Indexes, %s\n", (nowPlaying == player1) ? "Player 1" : "Player 2");
         input (nowPlaying);
-        system ("cls");
+        system ("clear");
 
         if (--cellsLeft < 1)
         {
@@ -76,7 +76,7 @@ playAgain:
         }
     } while (!checkWin (nowPlaying));
 
-    system ("cls");
+    system ("clear");
     printBoard ();
 
     if (!tie)

@@ -51,7 +51,8 @@ int main (void)
 
 playAgain:
     system ("cls");
-    for (int i = 0; i < ROWS; i++)
+
+    for (int i = 0; i < ROWS; i++)      //make the board empty
         for (int j = 0; j < COLS; j++)
             board[i][j] = ' ';
 
@@ -115,10 +116,16 @@ void printRules (void)
 
 void printBoard (void)
 {
+    //print columns index
+    for (char i = 'A'; i <= ROWS + 'A'; i++)
+        printf (" %c ", i);
+    printf ("\n");
+
     for (int i = 0; i < ROWS; i++)
     {
+        printf ("%d", i);   //printing row index
         for (int j = 0; j < COLS; j++)
-            printf (" %c %c", board[i][j], (j < 2) ? '\x7C' : '\n');
+            printf ("%c %c", board[i][j], (j < 2) ? '\x7C' : '\n');
 
         printf ("%s\n", (i < ROWS - 1) ? "-----------" : "");
     }

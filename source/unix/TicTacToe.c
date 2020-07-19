@@ -115,8 +115,13 @@ void printRules (void)
 
 void printBoard (void)
 {
+    for (char i = 'A'; i < ROWS + 'A'; i++)
+        printf (" %c ", i);
+    printf ("\n");
+    
     for (int i = 0; i < ROWS; i++)
     {
+        printf ("%d", i);
         for (int j = 0; j < COLS; j++)
             printf (" %c %c", board[i][j], (j < 2) ? '\x7C' : '\n');
 

@@ -7,11 +7,11 @@
 #define true 1
 #define false 0
 
-#define printRules()	printf ("\nThis is a two player game.\n"  /
-	        					"2) Players take turns entering the row and column number\n"  /
-	        					"   of the cell they want their symbol to go into.\n"  /
-	        					"3) Player 1 is assigned 'X' and Player 2 is assigned '0'\n"  /
-	        					"4) The first player to align THREE of their own symbols\n"  /
+#define printRules()	printf ("\nThis is a two player game.\n"  \
+	        					"2) Players take turns entering the row and column number\n"  \
+	        					"   of the cell they want their symbol to go into.\n"  \
+	        					"3) Player 1 is assigned 'X' and Player 2 is assigned '0'\n"  \
+	        					"4) The first player to align THREE of their own symbols\n"  \
 	        					"   in a row, column, or diagonal wins.\n\n\n");
 
 

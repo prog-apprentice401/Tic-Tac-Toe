@@ -7,9 +7,21 @@
 #define true 1
 #define false 0
 
-#define PLAYER_ERROR    0
-#define USED_CELL       1
-#define INVALID_INDEX   2
+#define printRules()	printf ("\nThis is a two player game.\n"  /
+	        					"2) Players take turns entering the row and column number\n"  /
+	        					"   of the cell they want their symbol to go into.\n"  /
+	        					"3) Player 1 is assigned 'X' and Player 2 is assigned '0'\n"  /
+	        					"4) The first player to align THREE of their own symbols\n"  /
+	        					"   in a row, column, or diagonal wins.\n\n\n");
+
+
+enum errors
+{
+	PLAYER_ERROR,
+	USED_CELL,
+	INVALID_INDEX
+};
+
 
 typedef _Bool bool;
 
@@ -23,7 +35,6 @@ typedef enum player
 /*function definitions for main*/
 
 int clearBuffer (void);     //utility function to clear the buffer when needed
-void printRules (void);
 void printBoard (void);
 void input (player);
 bool checkWin (player);
@@ -51,8 +62,7 @@ int main (void)
 
 playAgain:
     system ("cls");
-
-    for (int i = 0; i < ROWS; i++)      //make the board empty
+    for (int i = 0; i < ROWS; i++)
         for (int j = 0; j < COLS; j++)
             board[i][j] = ' ';
 
@@ -96,36 +106,24 @@ int clearBuffer (void)
 {
     int i = 0, dump;
 
-    while ((dump = getchar ()) != '\n'  &&  dump != EOF)
+    while ((dump = getchar ()) != '\n'  &&  dump != EOF && dump != '\r')
         i++;
 
     return i;
 }
 
 
-void printRules (void)
-{
-    printf ("\nThis is a two player game.\n"
-	        "2) Players take turns entering the row and column number\n"
-	        "   of the cell they want their symbol to go into.\n"
-	        "3) Player 1 is assigned 'X' and Player 2 is assigned '0'\n"
-	        "4) The first player to align THREE of their own symbols\n"
-	        "   in a row, column, or diagonal wins.\n\n\n");
-}
-
-
 void printBoard (void)
 {
-    //print columns index
-    for (char i = 'A'; i <= ROWS + 'A'; i++)
+    for (char i = 'A'; i < ROWS + 'A'; i++)
         printf (" %c ", i);
     printf ("\n");
-
+    
     for (int i = 0; i < ROWS; i++)
     {
-        printf ("%d", i);   //printing row index
+        printf ("%d", i);
         for (int j = 0; j < COLS; j++)
-            printf ("%c %c", board[i][j], (j < 2) ? '\x7C' : '\n');
+            printf (" %c %c", board[i][j], (j < 2) ? '\x7C' : '\n');
 
         printf ("%s\n", (i < ROWS - 1) ? "-----------" : "");
     }
@@ -339,9 +337,12 @@ void handleError (int errorCode)
 
         case INVALID_INDEX:
             printf ("ERROR!!!\n"
-                    "The Index Is Invalid\n\n");
+                    "Invalid Index\n\n");
             break;
-    }
+    
+		default:
+			printf ("UNKNOWN ERROR!!!\n\n");
+	}
 }
 
 

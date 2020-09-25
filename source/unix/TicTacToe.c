@@ -1,8 +1,9 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ROWS 3
-#define COLS 3
+#define ROWS 4
+#define COLS ROWS
 
 #define true 1
 #define false 0
@@ -11,8 +12,8 @@
 	        					"2) Players take turns entering the row and column number\n"  \
 	        					"   of the cell they want their symbol to go into.\n"  \
 	        					"3) Player 1 is assigned 'X' and Player 2 is assigned '0'\n"  \
-	        					"4) The first player to align THREE of their own symbols\n"  \
-	        					"   in a row, column, or diagonal wins.\n\n\n");
+	        					"4) The first player to align as many of their own symbols\n"  \
+	        					"   as the number of rows, in a row, column, or diagonal wins.\n\n\n");
 
 
 enum errors
@@ -78,12 +79,13 @@ playAgain:
         input (nowPlaying);
         system ("clear");
 
-        if (--cellsLeft < 1)
+        if (cellsLeft < 1)
         {
             printf ("TIE!\n");
             tie = 1;
             break;
         }
+        cellsLeft--;
     } while (!checkWin (nowPlaying));
 
     system ("clear");
@@ -115,17 +117,24 @@ int clearBuffer (void)
 
 void printBoard (void)
 {
+    printf ("  ");
     for (char i = 'A'; i < ROWS + 'A'; i++)
-        printf (" %c ", i);
+        printf (" %c  ", i);
     printf ("\n");
     
     for (int i = 0; i < ROWS; i++)
     {
-        printf ("%d", i);
+        printf ("%d)", i);
         for (int j = 0; j < COLS; j++)
-            printf (" %c %c", board[i][j], (j < 2) ? '\x7C' : '\n');
+            printf (" %c %c", board[i][j], (j < COLS - 1) ? '\x7C' : '\n');
 
-        printf ("%s\n", (i < ROWS - 1) ? "-----------" : "");
+        if (i != ROWS - 1)
+        {  
+            printf ("  ");
+            for (int j = 0; j < COLS; j++)
+                printf ("----");
+            printf("\n");
+        }
     }
 }
 
@@ -139,26 +148,10 @@ enterIndex:
     scanf ("%c%d", &col, &row);
     clearBuffer ();
 
-    switch (col)
-    {
-        case 'A': case 'a':
-            col = 0;
-            break;
+    col = toupper(col) - 'A';  //convert to valid index
 
-        case 'B': case 'b':
-            col = 1;
-            break;
-
-        case 'C': case 'c':
-            col = 2;
-            break;
-
-        default:
-            handleError (INVALID_INDEX);
-            goto enterIndex;
-    }
-
-    if (row > 2  ||  row < 0)
+    if (row >= ROWS  ||  row < 0  ||
+        col >= COLS  ||  col < 0)
     {
         handleError (INVALID_INDEX);
         goto enterIndex;

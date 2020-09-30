@@ -9,9 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ROWS 2
-#define COLS ROWS
-
 #define true 1
 #define false 0
 
@@ -42,16 +39,17 @@ typedef _Bool bool;
 /*function definitions for main*/
 
 int clearBuffer (void);	 //utility function to clear the buffer when needed
-void printBoard (char *, int, int);
-void input (player, char *, int, int);
-bool checkWin (player, char *, int, int);
+void printBoard (const char const *, const int, const int);
+void input (const player, char *, const int, const int);
+bool checkWin (const player, const char const *, const int, const int);
 void switchPlayer (player *);   //function to change player
-void handleError (int);	 //funtion to print approppriate error messages
-void handleWin (player);	//logic to run at the win of a player
+void handleError (const errors);	 //funtion to print approppriate error messages
+void handleWin (const player);	//logic to run at the win of a player
 
 int main (void)
 {
-	player nowPlaying;
+    player nowPlaying;
+    int ROWS, COLS;
 	int cellsLeft;
 	char ans;
 	bool tie = 0;
@@ -82,9 +80,9 @@ playAgain:
 	{
 		switchPlayer (&nowPlaying);
 
-		printBoard ();
+		printBoard ((char *) board, ROWS, COLS);
 		printf ("Enter the Indexes, %s\n", (nowPlaying == player1) ? "Player 1" : "Player 2");
-		input (nowPlaying);
+		input (nowPlaying, (char *) board, ROWS, COLS);
 		system ("clear");
 
 		if (cellsLeft < 1)
@@ -94,10 +92,10 @@ playAgain:
 			break;
 		}
 		cellsLeft--;
-	} while (!checkWin (nowPlaying));
+	} while (!checkWin (nowPlaying, (char *) board, ROWS, COLS));
 
 	system ("clear");
-	printBoard ();
+	printBoard ((char *) board, ROWS, COLS);
 
 	if (!tie)
 		handleWin (nowPlaying);
@@ -123,7 +121,7 @@ int clearBuffer (void)
 }
 
 
-void printBoard (char *board, int ROWS, int COLS)
+void printBoard (char const *board, const int ROWS, const int COLS)
 {
 	printf ("  ");
 	for (char i = 'A'; i < ROWS + 'A'; i++)
@@ -147,7 +145,7 @@ void printBoard (char *board, int ROWS, int COLS)
 }
 
 
-void input (player nowPlaying, char *, int ROWS, int COLS)
+void input (const player nowPlaying, char *board, const int ROWS, const int COLS)
 {
 	char col;
 	int row;
@@ -187,28 +185,29 @@ enterIndex:
 }
 
 
-bool checkWin (player nowPlaying, char *board, int ROWS, int COLS)
+bool checkWin (const player nowPlaying, const char const *board, const int ROWS, const int COLS)
 {
 	//functions used only by checkWin ();
-	bool checkRows (player);
-	bool checkDiags (player);
-	bool checkCols (player);
+	bool checkRows (player, const char const *, const int, const int);
+	bool checkDiags (player, const char const *, const int, const int);
+	bool checkCols (player, const char const *, const int, const int);
 
-	return (checkRows (nowPlaying)  ||  checkCols (nowPlaying)  ||  checkDiags(nowPlaying));
+	return (checkRows (nowPlaying, board, ROWS, COLS)  ||  checkCols (nowPlaying, board, ROWS, COLS)
+                ||  checkDiags(nowPlaying, board, ROWS, COLS));
 }
 
 
-bool checkRows (const player nowPlaying)
+bool checkRows (const player nowPlaying, const char const *board, const int ROWS, const int COLS)
 {
 	const char charToSearch = (nowPlaying == player1) ? 'X' : '0';
 
 	for (int i = 0; i < ROWS; i++)
 		for (int j = 0; j < COLS; j++)
-			if (board[i][j] == charToSearch)
-			{
+			if (board[i * COLS + j] == charToSearch)
+		    {
 				if (j >= COLS - 1)
 					return true;
-			}
+            }
 
 			else
 				break;
@@ -217,7 +216,7 @@ bool checkRows (const player nowPlaying)
 }
 
 
-bool checkCols (const player nowPlaying)
+bool checkCols (const player nowPlaying, const char const *board, const int ROWS, const int COLS)
 {
 	char charToSearch;
 
@@ -238,7 +237,7 @@ bool checkCols (const player nowPlaying)
 
 	for (int j = 0; j < COLS; j++)
 		for (int i = 0; i < ROWS; i++)
-			if (board[i][j] == charToSearch)
+			if (board[i * COLS + j] == charToSearch)
 			{
 				if (i >= ROWS - 1)
 					return true;
@@ -250,7 +249,7 @@ bool checkCols (const player nowPlaying)
 }
 
 
-bool checkDiags (const player nowPlaying)
+bool checkDiags (const player nowPlaying, const char const *board, const int ROWS, const int COLS)
 {
 	char charToSearch;
 
@@ -271,7 +270,7 @@ bool checkDiags (const player nowPlaying)
 
 	//check first diagonal
 	for (int i = 0, j = 0; i < ROWS  &&  j < COLS; i++, j++)
-		if (board[i][j] == charToSearch)
+		if (board[i * COLS + j] == charToSearch)
 		{
 			if (i == ROWS - 1)
 			{
@@ -285,7 +284,7 @@ bool checkDiags (const player nowPlaying)
 
 	//check second diagonal
 	for (int i = ROWS - 1, j = 0; i >= 0  &&  j < COLS; i--, j++)
-		if (board[i][j] == charToSearch)
+		if (board[i * COLS + j] == charToSearch)
 		{
 			if (i == 0)
 			{
@@ -320,7 +319,7 @@ void switchPlayer (player *nowPlaying)
 }
 
 
-void handleError (int errorCode)
+void handleError (const errors errorCode)
 {
 	switch (errorCode)
 	{
@@ -346,9 +345,13 @@ void handleError (int errorCode)
 }
 
 
-void handleWin (player winner)
+void handleWin (const player winner)
 {
 	printf ("Congratularions %s! You Win!\n", (winner == player1) ? "Player 1" : "Player 2");
 	printf ("I Hope You Enjoyed The Game!\n");
 }
-	irintf ("I Hope You Enjoyed The Game!\n");
+
+
+
+
+

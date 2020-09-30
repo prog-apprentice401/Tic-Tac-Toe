@@ -1,8 +1,12 @@
+/*
+    
+*/
+
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ROWS 4
+#define ROWS 2
 #define COLS ROWS
 
 #define true 1
@@ -16,12 +20,12 @@
 	        					"   as the number of rows, in a row, column, or diagonal wins.\n\n\n");
 
 
-enum errors
+typedef enum errors
 {
 	PLAYER_ERROR,
 	USED_CELL,
 	INVALID_INDEX
-};
+} errors;
 
 
 typedef _Bool bool;

@@ -64,10 +64,19 @@ int main (void)
 	
 playAgain:
 	system ("clear");
-	printf ("Enter the length of the side of the board:\n");
-	scanf ("%d", &sideLength);
-	clearBuffer ();
+
+	while (1)
+	{
+		printf ("Enter the length of the side of the board:\n");
+		scanf ("%d", &sideLength);
+		clearBuffer ();
 	
+		if (sideLength <= 0 || sideLength > 26)
+			printf ("Maximum Length is 26!\n");
+		else
+			break;
+	}
+
 	board = malloc (sideLength * sideLength);
 
 	system ("clear");
@@ -126,14 +135,14 @@ int clearBuffer (void)
 
 void printBoard (char const *board, const int sideLength)
 {
-	printf ("  ");
+	printf ("   ");
 	for (char i = 'A'; i < sideLength + 'A'; i++)
 		printf (" %c  ", i);
 	printf ("\n");
 	
 	for (int i = 0; i < sideLength; i++)
 	{
-		printf ("%d)", i);
+		printf ("%2d)", i);
 		for (int j = 0; j < sideLength; j++)
 			printf (" %c %c", board[i * sideLength + j], (j < sideLength - 1) ? '\x7C' : '\n');
 
@@ -161,12 +170,14 @@ enterIndex:
 	printf ("Index: %c%d\n", col + 'A', row);	
 	if (row >= sideLength  ||  row < 0  ||  col >= sideLength  ||  col < 0)
 	{
+		printf ("Index: %c%d\n", col, row);
 		handleError (INVALID_INDEX);
 		goto enterIndex;
 	}
 
 	if (board[row * sideLength + col] != ' ')
 	{
+		printf ("Cell: %c%d\n", col, row);
 		handleError (USED_CELL);
 		goto enterIndex;
 	}

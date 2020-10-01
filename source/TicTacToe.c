@@ -39,9 +39,9 @@ typedef _Bool bool;
 /*function definitions for main*/
 
 int clearBuffer (void);	 //utility function to clear the buffer when needed
-void printBoard (const char const *, const int, const int);
-void input (const player, char *, const int, const int);
-bool checkWin (const player, const char const *, const int, const int);
+void printBoard (const char const *, const int);
+void input (const player, char *, const int);
+bool checkWin (const player, const char const *, const int);
 void switchPlayer (player *);   //function to change player
 void handleError (const errors);	 //funtion to print approppriate error messages
 void handleWin (const player);	//logic to run at the win of a player
@@ -49,11 +49,12 @@ void handleWin (const player);	//logic to run at the win of a player
 int main (void)
 {
     player nowPlaying;
-    int ROWS, COLS;
+    int sideLength;
 	int cellsLeft;
+	char *board = NULL;
 	char ans;
 	bool tie = 0;
-
+	system ("clear");
 	printf ("Hello! Welcome to this game of tic-tac-toe\n"
 			"Here are the rules:\n");
 	printRules ();
@@ -61,28 +62,29 @@ int main (void)
 	printf ("Press Enter to continue");
 	clearBuffer ();
 	
-	printf ("Enter the length of the side of the board (fixed for each session):\n");
-	scanf ("%d", &ROWS);
-	COLS = ROWS;
-
-	char board[ROWS][COLS];
-
 playAgain:
 	system ("clear");
-	for (int i = 0; i < ROWS; i++)
-		for (int j = 0; j < COLS; j++)
-			board[i][j] = ' ';
+	printf ("Enter the length of the side of the board:\n");
+	scanf ("%d", &sideLength);
+	clearBuffer ();
+	
+	board = malloc (sideLength * sideLength);
 
-	cellsLeft = ROWS * COLS;
+	system ("clear");
+	for (int i = 0; i < sideLength; i++)
+		for (int j = 0; j < sideLength; j++)
+			board[i * sideLength + j] = ' ';
+
+	cellsLeft = sideLength * sideLength;
 	nowPlaying = player2;
 
 	do
 	{
 		switchPlayer (&nowPlaying);
 
-		printBoard ((char *) board, ROWS, COLS);
+		printBoard (board, sideLength);
 		printf ("Enter the Indexes, %s\n", (nowPlaying == player1) ? "Player 1" : "Player 2");
-		input (nowPlaying, (char *) board, ROWS, COLS);
+		input (nowPlaying, board, sideLength);
 		system ("clear");
 
 		if (cellsLeft < 1)
@@ -92,14 +94,15 @@ playAgain:
 			break;
 		}
 		cellsLeft--;
-	} while (!checkWin (nowPlaying, (char *) board, ROWS, COLS));
+	} while (!checkWin (nowPlaying, board, sideLength));
 
 	system ("clear");
-	printBoard ((char *) board, ROWS, COLS);
+	printBoard (board, sideLength);
 
 	if (!tie)
 		handleWin (nowPlaying);
 
+	free (board);
 
 	printf ("Do You Want To Play Again? (y or n)");
 	if (getchar () != 'n')
@@ -121,23 +124,23 @@ int clearBuffer (void)
 }
 
 
-void printBoard (char const *board, const int ROWS, const int COLS)
+void printBoard (char const *board, const int sideLength)
 {
 	printf ("  ");
-	for (char i = 'A'; i < ROWS + 'A'; i++)
+	for (char i = 'A'; i < sideLength + 'A'; i++)
 		printf (" %c  ", i);
 	printf ("\n");
 	
-	for (int i = 0; i < ROWS; i++)
+	for (int i = 0; i < sideLength; i++)
 	{
 		printf ("%d)", i);
-		for (int j = 0; j < COLS; j++)
-			printf (" %c %c", board[i * COLS + j], (j < COLS - 1) ? '\x7C' : '\n');
+		for (int j = 0; j < sideLength; j++)
+			printf (" %c %c", board[i * sideLength + j], (j < sideLength - 1) ? '\x7C' : '\n');
 
-		if (i != ROWS - 1)
+		if (i != sideLength - 1)
 		{  
 			printf ("  ");
-			for (int j = 0; j < COLS; j++)
+			for (int j = 0; j < sideLength; j++)
 				printf ("----");
 			printf("\n");
 		}
@@ -145,7 +148,7 @@ void printBoard (char const *board, const int ROWS, const int COLS)
 }
 
 
-void input (const player nowPlaying, char *board, const int ROWS, const int COLS)
+void input (const player nowPlaying, char *board, const int sideLength)
 {
 	char col;
 	int row;
@@ -155,14 +158,14 @@ enterIndex:
 	clearBuffer ();
 
 	col = toupper(col) - 'A';  //convert to valid index
-
-	if (row >= ROWS  ||  row < 0  ||  col >= COLS  ||  col < 0)
+	printf ("Index: %c%d\n", col + 'A', row);	
+	if (row >= sideLength  ||  row < 0  ||  col >= sideLength  ||  col < 0)
 	{
 		handleError (INVALID_INDEX);
 		goto enterIndex;
 	}
 
-	if (board[row * COLS + col] != ' ')
+	if (board[row * sideLength + col] != ' ')
 	{
 		handleError (USED_CELL);
 		goto enterIndex;
@@ -171,11 +174,11 @@ enterIndex:
 	switch (nowPlaying)
 	{
 		case player1:
-			board[row * COLS + col] = 'X';
+			board[row * sideLength + col] = 'X';
 			break;
 
 		case player2:
-			board[row * COLS + col] = '0';
+			board[row * sideLength + col] = '0';
 			break;
 
 		default:
@@ -185,27 +188,27 @@ enterIndex:
 }
 
 
-bool checkWin (const player nowPlaying, const char const *board, const int ROWS, const int COLS)
+bool checkWin (const player nowPlaying, const char const *board,  const int sideLength)
 {
 	//functions used only by checkWin ();
-	bool checkRows (player, const char const *, const int, const int);
-	bool checkDiags (player, const char const *, const int, const int);
-	bool checkCols (player, const char const *, const int, const int);
+	bool checkRows (player, const char const *, const int);
+	bool checkDiags (player, const char const *, const int);
+	bool checkCols (player, const char const *, const int);
 
-	return (checkRows (nowPlaying, board, ROWS, COLS)  ||  checkCols (nowPlaying, board, ROWS, COLS)
-                ||  checkDiags(nowPlaying, board, ROWS, COLS));
+	return (checkRows (nowPlaying, board, sideLength)  ||  checkCols (nowPlaying, board, sideLength)
+                ||  checkDiags(nowPlaying, board, sideLength));
 }
 
 
-bool checkRows (const player nowPlaying, const char const *board, const int ROWS, const int COLS)
+bool checkRows (const player nowPlaying, const char const *board, const int sideLength)
 {
 	const char charToSearch = (nowPlaying == player1) ? 'X' : '0';
 
-	for (int i = 0; i < ROWS; i++)
-		for (int j = 0; j < COLS; j++)
-			if (board[i * COLS + j] == charToSearch)
+	for (int i = 0; i < sideLength; i++)
+		for (int j = 0; j < sideLength; j++)
+			if (board[i * sideLength + j] == charToSearch)
 		    {
-				if (j >= COLS - 1)
+				if (j >= sideLength - 1)
 					return true;
             }
 
@@ -216,7 +219,7 @@ bool checkRows (const player nowPlaying, const char const *board, const int ROWS
 }
 
 
-bool checkCols (const player nowPlaying, const char const *board, const int ROWS, const int COLS)
+bool checkCols (const player nowPlaying, const char const *board, const int sideLength)
 {
 	char charToSearch;
 
@@ -235,11 +238,11 @@ bool checkCols (const player nowPlaying, const char const *board, const int ROWS
 			break;
 	}
 
-	for (int j = 0; j < COLS; j++)
-		for (int i = 0; i < ROWS; i++)
-			if (board[i * COLS + j] == charToSearch)
+	for (int j = 0; j < sideLength; j++)
+		for (int i = 0; i < sideLength; i++)
+			if (board[i * sideLength + j] == charToSearch)
 			{
-				if (i >= ROWS - 1)
+				if (i >= sideLength - 1)
 					return true;
 			}
 			else
@@ -249,7 +252,7 @@ bool checkCols (const player nowPlaying, const char const *board, const int ROWS
 }
 
 
-bool checkDiags (const player nowPlaying, const char const *board, const int ROWS, const int COLS)
+bool checkDiags (const player nowPlaying, const char const *board, const int sideLength)
 {
 	char charToSearch;
 
@@ -269,10 +272,10 @@ bool checkDiags (const player nowPlaying, const char const *board, const int ROW
 	}
 
 	//check first diagonal
-	for (int i = 0, j = 0; i < ROWS  &&  j < COLS; i++, j++)
-		if (board[i * COLS + j] == charToSearch)
+	for (int i = 0, j = 0; i < sideLength  &&  j < sideLength; i++, j++)
+		if (board[i * sideLength + j] == charToSearch)
 		{
-			if (i == ROWS - 1)
+			if (i == sideLength - 1)
 			{
 				return true;
 				printf ("DIAGONAL CHECKING WIN!\n");
@@ -283,8 +286,8 @@ bool checkDiags (const player nowPlaying, const char const *board, const int ROW
 			break;
 
 	//check second diagonal
-	for (int i = ROWS - 1, j = 0; i >= 0  &&  j < COLS; i--, j++)
-		if (board[i * COLS + j] == charToSearch)
+	for (int i = sideLength - 1, j = 0; i >= 0  &&  j < sideLength; i--, j++)
+		if (board[i * sideLength + j] == charToSearch)
 		{
 			if (i == 0)
 			{

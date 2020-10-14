@@ -96,13 +96,13 @@ playAgain:
 		input (nowPlaying, board, sideLength);
 		system ("clear");
 
+		cellsLeft--;
 		if (cellsLeft < 1)
 		{
 			printf ("TIE!\n");
 			tie = 1;
 			break;
 		}
-		cellsLeft--;
 	} while (!checkWin (nowPlaying, board, sideLength));
 
 	system ("clear");
@@ -111,6 +111,9 @@ playAgain:
 	if (!tie)
 		handleWin (nowPlaying);
 
+	else
+		printf ("It's a Tie!\n");
+		
 	free (board);
 
 	printf ("Do You Want To Play Again? (y or n)");

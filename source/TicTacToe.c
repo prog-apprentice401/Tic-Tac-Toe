@@ -1,6 +1,8 @@
 /*
     This is a simple Tic-%Tac-Toe game written for the
-    *nix terminal in C.
+    linux terminal in C. To execute it, one can move it
+	to the /usr/bin folder, nd then just type the name
+	from anywhere in the file system.
 
     Written By:	Koustubh Srivastava
 */
@@ -20,7 +22,7 @@
 								"   as the number of rows, in a row, column, or diagonal wins.\n\n\n");
 
 
-typedef enum errors
+typedef enum errors 
 {
 	PLAYER_ERROR,
 	USED_CELL,
@@ -28,7 +30,7 @@ typedef enum errors
 } errors;
 
 
-typedef enum player
+typedef enum player 
 {
 	player1 = 1,
 	player2 = 2
@@ -65,8 +67,7 @@ int main (void)
 playAgain:
 	system ("clear");
 
-	while (1)
-	{
+	while (1) {
 		printf ("Enter the length of the side of the board:\n");
 		scanf ("%d", &sideLength);
 		clearBuffer ();
@@ -87,8 +88,7 @@ playAgain:
 	cellsLeft = sideLength * sideLength;
 	nowPlaying = player2;
 
-	do
-	{
+	do {
 		switchPlayer (&nowPlaying);
 
 		printBoard (board, sideLength);
@@ -97,8 +97,7 @@ playAgain:
 		system ("clear");
 
 		cellsLeft--;
-		if (cellsLeft < 1)
-		{
+		if (cellsLeft < 1) {
 			printf ("TIE!\n");
 			tie = 1;
 			break;
@@ -110,15 +109,13 @@ playAgain:
 
 	if (!tie)
 		handleWin (nowPlaying);
-
 	else
 		printf ("It's a Tie!\n");
 		
 	free (board);
 
 	printf ("Do You Want To Play Again? (y or n)");
-	if (getchar () != 'n')
-	{
+	if (getchar () != 'n') {
 		clearBuffer ();
 		goto playAgain;
 	}
@@ -143,14 +140,12 @@ void printBoard (char const *board, const int sideLength)
 		printf (" %c  ", i);
 	printf ("\n");
 	
-	for (int i = 0; i < sideLength; i++)
-	{
+	for (int i = 0; i < sideLength; i++) {
 		printf ("%2d)", i);
 		for (int j = 0; j < sideLength; j++)
 			printf (" %c %c", board[i * sideLength + j], (j < sideLength - 1) ? '\x7C' : '\n');
 
-		if (i != sideLength - 1)
-		{  
+		if (i != sideLength - 1) {  
 			printf ("  ");
 			for (int j = 0; j < sideLength; j++)
 				printf ("----");
@@ -170,23 +165,21 @@ enterIndex:
 	clearBuffer ();
 
 	col = toupper(col) - 'A';  //convert to valid index
-	printf ("Index: %c%d\n", col + 'A', row);	
-	if (row >= sideLength  ||  row < 0  ||  col >= sideLength  ||  col < 0)
-	{
+	printf ("Index: %c%d\n", col + 'A', row);
+
+	if (row >= sideLength  ||  row < 0  ||  col >= sideLength  ||  col < 0){
 		printf ("Index: %c%d\n", col, row);
 		handleError (INVALID_INDEX);
 		goto enterIndex;
 	}
 
-	if (board[row * sideLength + col] != ' ')
-	{
+	if (board[row * sideLength + col] != ' ') {
 		printf ("Cell: %c%d\n", col, row);
 		handleError (USED_CELL);
 		goto enterIndex;
 	}
 
-	switch (nowPlaying)
-	{
+	switch (nowPlaying) {
 		case player1:
 			board[row * sideLength + col] = 'X';
 			break;
@@ -209,8 +202,9 @@ bool checkWin (const player nowPlaying, const char const *board,  const int side
 	bool checkDiags (player, const char const *, const int);
 	bool checkCols (player, const char const *, const int);
 
-	return (checkRows (nowPlaying, board, sideLength)  ||  checkCols (nowPlaying, board, sideLength)
-                ||  checkDiags(nowPlaying, board, sideLength));
+	return (checkRows (nowPlaying, board, sideLength)
+		||  checkCols (nowPlaying, board, sideLength)
+		||  checkDiags(nowPlaying, board, sideLength));
 }
 
 
@@ -220,15 +214,13 @@ bool checkRows (const player nowPlaying, const char const *board, const int side
 
 	for (int i = 0; i < sideLength; i++)
 		for (int j = 0; j < sideLength; j++)
-			if (board[i * sideLength + j] == charToSearch)
-		    {
-				if (j >= sideLength - 1)
+			if (board[i * sideLength + j] == charToSearch) {
+				if (j >= sideLength - 1) {
 					return true;
-            }
-
-			else
+				}
+			} else {
 				break;
-
+			}
 	return false;
 }
 
@@ -237,30 +229,29 @@ bool checkCols (const player nowPlaying, const char const *board, const int side
 {
 	char charToSearch;
 
-	switch (nowPlaying)
-	{
+	switch (nowPlaying) {
 		case player1:
 			charToSearch = 'X';
 			break;
-
 		case player2:
 			charToSearch = '0';
 			break;
-
 		default:
 			handleError (PLAYER_ERROR);
 			break;
 	}
 
-	for (int j = 0; j < sideLength; j++)
-		for (int i = 0; i < sideLength; i++)
-			if (board[i * sideLength + j] == charToSearch)
-			{
-				if (i >= sideLength - 1)
+	for (int j = 0; j < sideLength; j++) {
+		for (int i = 0; i < sideLength; i++) {
+			if (board[i * sideLength + j] == charToSearch) {
+				if (i >= sideLength - 1) {
 					return true;
-			}
-			else
+				}
+			} else {
 				break;
+			}
+		}
+	}
 
 	return false;
 }
@@ -270,8 +261,7 @@ bool checkDiags (const player nowPlaying, const char const *board, const int sid
 {
 	char charToSearch;
 
-	switch (nowPlaying)
-	{
+	switch (nowPlaying) {
 		case player1:
 			charToSearch = 'X';
 			break;
@@ -286,41 +276,33 @@ bool checkDiags (const player nowPlaying, const char const *board, const int sid
 	}
 
 	//check first diagonal
-	for (int i = 0, j = 0; i < sideLength  &&  j < sideLength; i++, j++)
-		if (board[i * sideLength + j] == charToSearch)
-		{
-			if (i == sideLength - 1)
-			{
+	for (int i = 0, j = 0; i < sideLength  &&  j < sideLength; i++, j++) {
+		if (board[i * sideLength + j] == charToSearch) {
+			if (i >= sideLength - 1) {
 				return true;
-				printf ("DIAGONAL CHECKING WIN!\n");
 			}
-			continue;
-		}
-		else
+		} else {
 			break;
+		}
+	}
 
 	//check second diagonal
-	for (int i = sideLength - 1, j = 0; i >= 0  &&  j < sideLength; i--, j++)
-		if (board[i * sideLength + j] == charToSearch)
-		{
-			if (i == 0)
-			{
+	for (int i = sideLength - 1, j = 0; i >= 0  &&  j < sideLength; i--, j++) {
+		if (board[i * sideLength + j] == charToSearch) {
+			if (i <= 0) {
 				return true;
-				printf ("DIAGONAL CHECKING WIN!\n");
 			}
-			continue;
-		}
-		else
+		} else {
 			break;
+		}
+	}
 
 	return false;
 }
 
-
 void switchPlayer (player *nowPlaying)
 {
-	switch (*nowPlaying)
-	{
+	switch (*nowPlaying) {
 		case player1:
 			*nowPlaying = player2;
 			break;
@@ -335,11 +317,9 @@ void switchPlayer (player *nowPlaying)
 	}
 }
 
-
 void handleError (const errors errorCode)
 {
-	switch (errorCode)
-	{
+	switch (errorCode) {
 		case PLAYER_ERROR:
 			printf ("FATAL ERROR!!!\n"
 					"Error Maintaining Player Record\n\n");
@@ -361,14 +341,8 @@ void handleError (const errors errorCode)
 	}
 }
 
-
 void handleWin (const player winner)
 {
 	printf ("Congratularions %s! You Win!\n", (winner == player1) ? "Player 1" : "Player 2");
 	printf ("I Hope You Enjoyed The Game!\n");
 }
-
-
-
-
-

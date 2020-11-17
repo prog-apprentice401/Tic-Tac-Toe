@@ -1,10 +1,10 @@
 /*
-    This is a simple Tic-%Tac-Toe game written for the
-    linux terminal in C. To execute it, one can move it
+	This is a simple Tic-%Tac-Toe game written for the
+	linux terminal in C. To execute it, one can move it
 	to the /usr/bin folder, nd then just type the name
 	from anywhere in the file system.
 
-    Written By:	Koustubh Srivastava
+	Written By:	Koustubh Srivastava
 */
 
 #include <ctype.h>
@@ -14,144 +14,180 @@
 #define true 1
 #define false 0
 
-#define printRules()	printf ("\nThis is a two player game.\n"  \
-								"2) Players take turns entering the row and column number\n"  \
-								"   of the cell they want their symbol to go into.\n"  \
-								"3) Player 1 is assigned 'X' and Player 2 is assigned '0'\n"  \
-								"4) The first player to align as many of their own symbols\n"  \
-								"   as the number of rows, in a row, column, or diagonal wins.\n\n\n");
 
-
-typedef enum errors 
-{
+typedef enum errors {
 	PLAYER_ERROR,
 	USED_CELL,
 	INVALID_INDEX
 } errors;
 
+typedef enum colours {
+	RED,
+	GREEN,
+	YELLOW,
+	BLUE,
+	MAGENTA,
+	CYAN,
+	NORMAL,
 
-typedef enum player 
-{
+	DEFAULT = YELLOW
+} colours;
+
+typedef enum player {
 	player1 = 1,
 	player2 = 2
 } player;
 
 typedef _Bool bool;
 
-/*function definitions for main*/
-
-int clearBuffer (void);	 //utility function to clear the buffer when needed
-void printBoard (const char const *, const int);
+void printRules (void);
+int clearBuffer (void);
+void printBoard (const char *, const int);
 void input (const player, char *, const int);
-bool checkWin (const player, const char const *, const int);
-void switchPlayer (player *);   //function to change player
-void handleError (const errors);	 //funtion to print approppriate error messages
-void handleWin (const player);	//logic to run at the win of a player
+bool checkWin (const player, const char *, const int);
+void switchPlayer (player *);
+
+void handleError (const errors);
+void handleWin (const player);
+
+void setColour (const colours colourToSet);
 
 int main (void)
 {
-    player nowPlaying;
-    int sideLength;
+	player nowPlaying;
+	int sideLength;
 	int cellsLeft;
 	char *board = NULL;
-	char ans;
 	bool tie = 0;
+	char playAgain = 'y';
 	system ("clear");
+	
+	setColour (BLUE);
 	printf ("Hello! Welcome to this game of tic-tac-toe\n"
-			"Here are the rules:\n");
+                "Here are the rules:\n");
+	setColour (DEFAULT);
 	printRules ();
-
-	printf ("Press Enter to continue");
+	
+	setColour (RED);
+	printf ("Press Enter to continue\n");
 	clearBuffer ();
 	
-playAgain:
-	system ("clear");
-
-	while (1) {
-		printf ("Enter the length of the side of the board:\n");
-		scanf ("%d", &sideLength);
-		clearBuffer ();
-	
-		if (sideLength <= 0 || sideLength > 26)
-			printf ("Maximum Length is 26!\n");
-		else
-			break;
-	}
-
-	board = malloc (sideLength * sideLength);
-
-	system ("clear");
-	for (int i = 0; i < sideLength; i++)
-		for (int j = 0; j < sideLength; j++)
-			board[i * sideLength + j] = ' ';
-
-	cellsLeft = sideLength * sideLength;
-	nowPlaying = player2;
-
 	do {
-		switchPlayer (&nowPlaying);
-
-		printBoard (board, sideLength);
-		printf ("Enter the Indexes, %s\n", (nowPlaying == player1) ? "Player 1" : "Player 2");
-		input (nowPlaying, board, sideLength);
+		setColour (DEFAULT);
 		system ("clear");
-
-		cellsLeft--;
-		if (cellsLeft < 1) {
-			printf ("TIE!\n");
-			tie = 1;
-			break;
-		}
-	} while (!checkWin (nowPlaying, board, sideLength));
-
-	system ("clear");
-	printBoard (board, sideLength);
-
-	if (!tie)
-		handleWin (nowPlaying);
-	else
-		printf ("It's a Tie!\n");
+	
+		while (1) {
+			printf ("Enter the length of the side of the board:\n");
+			setColour (RED);
+			scanf ("%d", &sideLength);
+			setColour (DEFAULT);
+			clearBuffer ();
 		
-	free (board);
+			if (sideLength <= 0 || sideLength > 26) {
+				setColour (RED);
+				printf ("Length Should Be Between 0 And 26!\n");
+				setColour (DEFAULT);
+			} else {
+				break;
+			}
+		}
 
-	printf ("Do You Want To Play Again? (y or n)");
-	if (getchar () != 'n') {
-		clearBuffer ();
-		goto playAgain;
-	}
+		board = malloc (sideLength * sideLength);
+
+		system ("clear");
+		for (int i = 0; i < sideLength; i++) {
+			for (int j = 0; j < sideLength; j++) {
+				board[i * sideLength + j] = ' ';
+			}
+		}
+
+		cellsLeft = sideLength * sideLength;
+		nowPlaying = player2;
+
+		do {
+			switchPlayer (&nowPlaying);
+	
+			printBoard (board, sideLength);
+			printf ("Enter the Indexes, %s\n", (nowPlaying == player1) ? "Player 1" : "Player 2");
+			input (nowPlaying, board, sideLength);
+			system ("clear");
+
+			cellsLeft--;
+			if (cellsLeft < 1) {
+				tie = 1;
+				break;
+			}
+		} while (!checkWin (nowPlaying, board, sideLength));
+
+		system ("clear");
+		printBoard (board, sideLength);
+
+		if (!tie) {
+			handleWin (nowPlaying);
+		} else {
+			setColour (CYAN);
+			printf ("It's a Tie!\n");
+			setColour (DEFAULT);
+		}
+
+		free (board);
+
+		printf ("Do You Want To Play Again? (y or n)");
+		setColour (RED);
+	} while ((playAgain = getchar ()) != 'n' && playAgain != 'N');
+	
+	setColour (NORMAL);
+	return 0;
 }
 
+void printRules (void)
+{
+	setColour (YELLOW);
+	printf ("\nThis is a two player game.\n"  \
+                "2) Players take turns entering the row and column number\n"
+                "   of the cell they want their symbol to go into.\n"
+                "3) Player 1 is assigned 'X' and Player 2 is assigned '0'\n"
+                "4) The first player to align as many of their own symbols\n"
+                "   as the number of rows, in a row, column, or diagonal wins.\n\n\n");
+	setColour (YELLOW);
+}
 
 int clearBuffer (void)
 {
 	int i = 0, dump;
 
-	while ((dump = getchar ()) != '\n'  &&  dump != EOF && dump != '\r')
+	while ((dump = getchar ()) != '\n'  &&  dump != EOF && dump != '\r') {
 		i++;
+	}
 
 	return i;
 }
 
 
-void printBoard (char const *board, const int sideLength)
+void printBoard (const char *board, const int sideLength)
 {
+	setColour (GREEN);
 	printf ("   ");
-	for (char i = 'A'; i < sideLength + 'A'; i++)
+	for (char i = 'A'; i < sideLength + 'A'; i++) {
 		printf (" %c  ", i);
+	}
 	printf ("\n");
 	
 	for (int i = 0; i < sideLength; i++) {
 		printf ("%2d)", i);
-		for (int j = 0; j < sideLength; j++)
+		for (int j = 0; j < sideLength; j++) {
 			printf (" %c %c", board[i * sideLength + j], (j < sideLength - 1) ? '\x7C' : '\n');
-
+		}
 		if (i != sideLength - 1) {  
 			printf ("  ");
-			for (int j = 0; j < sideLength; j++)
+			for (int j = 0; j < sideLength; j++) {
 				printf ("----");
+			}
 			printf("\n");
 		}
 	}
+
+	setColour (DEFAULT);
 }
 
 
@@ -160,23 +196,26 @@ void input (const player nowPlaying, char *board, const int sideLength)
 	char col;
 	int row;
 
-enterIndex:
-	scanf ("%c%d", &col, &row);
-	clearBuffer ();
+	while (1) {
+		setColour (RED);
+		scanf ("%c%d", &col, &row);
+		setColour (DEFAULT);
+		clearBuffer ();
 
-	col = toupper(col) - 'A';  //convert to valid index
-	printf ("Index: %c%d\n", col + 'A', row);
+		col = toupper(col) - 'A';  //convert to valid index
 
-	if (row >= sideLength  ||  row < 0  ||  col >= sideLength  ||  col < 0){
-		printf ("Index: %c%d\n", col, row);
-		handleError (INVALID_INDEX);
-		goto enterIndex;
-	}
+		if (row >= sideLength  ||  row < 0  ||  col >= sideLength  ||  col < 0){
+			handleError (INVALID_INDEX);
+			continue;
+		}
 
-	if (board[row * sideLength + col] != ' ') {
-		printf ("Cell: %c%d\n", col, row);
-		handleError (USED_CELL);
-		goto enterIndex;
+		if (board[row * sideLength + col] != ' ') {
+			printf ("Cell: %c%d\n", col, row);
+			handleError (USED_CELL);
+			continue;
+		}
+		
+		break;
 	}
 
 	switch (nowPlaying) {
@@ -195,37 +234,38 @@ enterIndex:
 }
 
 
-bool checkWin (const player nowPlaying, const char const *board,  const int sideLength)
+bool checkWin (const player nowPlaying, const char *board,  const int sideLength)
 {
 	//functions used only by checkWin ();
-	bool checkRows (player, const char const *, const int);
-	bool checkDiags (player, const char const *, const int);
-	bool checkCols (player, const char const *, const int);
+	bool checkRows (player, const char *, const int);
+	bool checkDiags (player, const char *, const int);
+	bool checkCols (player, const char *, const int);
 
 	return (checkRows (nowPlaying, board, sideLength)
-		||  checkCols (nowPlaying, board, sideLength)
-		||  checkDiags(nowPlaying, board, sideLength));
+                ||  checkCols (nowPlaying, board, sideLength)
+                ||  checkDiags(nowPlaying, board, sideLength));
 }
 
 
-bool checkRows (const player nowPlaying, const char const *board, const int sideLength)
+bool checkRows (const player nowPlaying, const char *board, const int sideLength)
 {
 	const char charToSearch = (nowPlaying == player1) ? 'X' : '0';
 
-	for (int i = 0; i < sideLength; i++)
-		for (int j = 0; j < sideLength; j++)
-			if (board[i * sideLength + j] == charToSearch) {
-				if (j >= sideLength - 1) {
-					return true;
-				}
-			} else {
+	for (int i = 0; i < sideLength; i++) {
+		for (int j = 0; j < sideLength; j++) {
+			if (!(board[i * sideLength + j] == charToSearch)) {
 				break;
+			} else if (j >= sideLength - 1) {
+				return true;
 			}
+		}
+	}
+
 	return false;
 }
 
 
-bool checkCols (const player nowPlaying, const char const *board, const int sideLength)
+bool checkCols (const player nowPlaying, const char *board, const int sideLength)
 {
 	char charToSearch;
 
@@ -257,7 +297,7 @@ bool checkCols (const player nowPlaying, const char const *board, const int side
 }
 
 
-bool checkDiags (const player nowPlaying, const char const *board, const int sideLength)
+bool checkDiags (const player nowPlaying, const char *board, const int sideLength)
 {
 	char charToSearch;
 
@@ -319,6 +359,7 @@ void switchPlayer (player *nowPlaying)
 
 void handleError (const errors errorCode)
 {
+	setColour (MAGENTA);
 	switch (errorCode) {
 		case PLAYER_ERROR:
 			printf ("FATAL ERROR!!!\n"
@@ -339,10 +380,41 @@ void handleError (const errors errorCode)
 		default:
 			printf ("UNKNOWN ERROR!!!\n\n");
 	}
+	setColour (DEFAULT);
 }
 
 void handleWin (const player winner)
 {
 	printf ("Congratularions %s! You Win!\n", (winner == player1) ? "Player 1" : "Player 2");
 	printf ("I Hope You Enjoyed The Game!\n");
+}
+
+void setColour (const colours colourToSet)
+{
+	switch (colourToSet)
+	{
+		case RED:
+			printf ("\033[1;31m");
+			break;
+		case GREEN:
+			printf ("\033[1;32m");
+			break;
+		case YELLOW:
+			printf ("\033[1;33m");
+			break;
+		case BLUE:
+			printf ("\033[1;34m");
+			break;
+		case MAGENTA:
+			printf ("\033[1;35m");
+			break;
+		case CYAN:
+			printf ("\033[1;36m");
+			break;
+		case NORMAL:
+			printf ("\033[0;0m");
+			break;
+		default:
+			break;
+	}
 }

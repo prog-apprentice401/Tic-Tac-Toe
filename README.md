@@ -9,7 +9,7 @@ to run it on your own machine, download and compile the source code.<br>
 ---
 Screenshots:<br>
 <br>
-![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot1.png?raw=true);
-![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot2.png?raw=true);
-![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot3.png?raw=true);
-![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot4.png?raw=true);
+![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot1.png?raw=true)
+![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot2.png?raw=true)
+![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot3.png?raw=true)
+![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot4.png?raw=true)

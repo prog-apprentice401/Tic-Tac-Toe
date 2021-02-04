@@ -1,6 +1,15 @@
 # Tic-Tac-Toe
 ### A Tic-Tac-Toe game for the cmd written in C<br>
 <br>
+This is a mini-project written in C for the Unix Terminal. The size of the board is variable,<br>
+and the only real way to exit a game halfwy through is to force it with CTRL + C.<br>
 <br>
-This application is easily downloadable. The executable can run without any additional utilities,and can be invoked <br>
-by typing its name into the terminal. A variable side length is offered, with a minimum of 1 and a maximum of 26
+to run it on your own machine, download and compile the source code.<br>
+<br>
+---
+Screenshots:<br>
+<br>
+![](https://github.com/prog-apprentice401/Tic-Tac-Toe/screenshots/shot1);
+![](https://github.com/prog-apprentice401/Tic-Tac-Toe/screenshots/shot2);
+![](https://github.com/prog-apprentice401/Tic-Tac-Toe/screenshots/shot3);
+![](https://github.com/prog-apprentice401/Tic-Tac-Toe/screenshots/shot4);

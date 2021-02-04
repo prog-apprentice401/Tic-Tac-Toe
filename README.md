@@ -5,9 +5,10 @@ This is a mini-project written in C for the Unix Terminal. The size of the board
 and the only real way to exit a game halfwy through is to force it with CTRL + C.<br>
 <br>
 to run it on your own machine, download and compile the source code.<br>
-<br>
----<br>
-Screenshots:<br>
+
+---
+
+Screenshots:
 
 ![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot1.png?raw=true)<br>
 ![](https://github.com/prog-apprentice401/Tic-Tac-Toe/blob/master/screenshots/Shot2.png?raw=true)<br>

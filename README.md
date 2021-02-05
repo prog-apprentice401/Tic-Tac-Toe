@@ -5,6 +5,8 @@ This is a mini-project written in C for the Unix Terminal. The size of the board
 and the only real way to exit a game halfwy through is to force it with CTRL + C.<br>
 <br>
 to run it on your own machine, download and compile the source code.<br>
+<br>
+Any suggestions or issues will be helpful<br>
 
 ---
 
